@@ -109,7 +109,7 @@
                 <div class="menu">
                     <ul>
                         <li>
-                            <a href="{{route('dashboard')}}" data-toggle="tooltip" data-placement="right" title="Home">
+                            <a href="{{route('dashboard')}}" data-toggle="tooltip" data-placement="right" title="Dashboard">
                                 <span><i class="la la-igloo"></i></span>
                             </a>
                         </li>
