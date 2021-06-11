@@ -4,7 +4,7 @@
 <div class="card-header justify-content-center">
     <h4 class="card-title">Verify your email address</h4>
 </div>
-<div class="card-body">
+<div class="card-body p-4">
     @if (session('resent'))
     <div class="alert alert-success" role="alert">
         {{ __('A fresh verification link has been sent to your email address.') }}

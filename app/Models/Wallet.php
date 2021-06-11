@@ -25,6 +25,16 @@ class Wallet extends Model
         'time_zone',
     ];
 
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'version',
+        'wif',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

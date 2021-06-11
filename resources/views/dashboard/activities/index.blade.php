@@ -8,50 +8,20 @@
                 <h4 class="card-title">Transaction History</h4>
             </div>
             <div class="card-body pt-0">
-                @if(auth()->user()->activities->isEmpty())
+                @if(empty(auth()->user()->address()['trnx']))
                 <p>All your activities will appear here</p>
                 @else
                 <div class="transaction-table">
                     <div class="table-responsive">
                         <table class="table mb-0 table-responsive-sm">
                             <tbody>
-                                @foreach(auth()->user()->activities as $act)
-                                @if(strtolower($act->type) == 'sent')
+                                @foreach(auth()->user()->address()['trnx'] as $act)
                                 <tr>
-                                    <td><span class="sold-thumb"><i class="la la-arrow-up"></i></span>
-                                    </td>
-
                                     <td>
-                                        <span class="badge badge-danger">{{ucfirst($act->type)}}</span>
+                                        {{$act->hash}}
                                     </td>
-                                    <td>
-                                        <i class="cc {{strtoupper($act->mode)}}"></i> {{strtoupper($act->mode)}}
-                                    </td>
-                                    <td>
-                                        {{ucfirst($act->summary)}}
-                                    </td>
-                                    <td class="text-danger">-{{strtoupper($act->value)}}</td>
-                                    <td>-{{$act->amount}}</td>
+                                    <td class="text-danger"><a href="https://www.blockchain.com/btc/tx/{{$act->hash}}" target="_blank">Explorer <i class="la la-external-link"></i></a></td>
                                 </tr>
-                                @endif
-                                @if(strtolower($act->type) == 'received')
-                                <tr>
-                                    <td><span class="sold-thumb"><i class="la la-arrow-down"></i></span>
-                                    </td>
-
-                                    <td>
-                                        <span class="badge badge-success">{{ucfirst($act->type)}}</span>
-                                    </td>
-                                    <td>
-                                        <i class="cc {{strtoupper($act->mode)}}"></i> {{strtoupper($act->mode)}}
-                                    </td>
-                                    <td>
-                                        {{ucfirst($act->summary)}}
-                                    </td>
-                                    <td class="text-success">+{{strtoupper($act->value)}}</td>
-                                    <td>+{{$act->amount}}</td>
-                                </tr>
-                                @endif
                                 @endforeach
                             </tbody>
                         </table>

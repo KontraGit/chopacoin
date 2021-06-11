@@ -44,10 +44,7 @@
                     </li>
                 </ul>
                 <div class="social-icons">
-                    <a class="facebook text-center" href="javascript:void(0)"><span><i class="fa fa-facebook"></i></span></a>
-                    <a class="twitter text-center" href="javascript:void(0)"><span><i class="fa fa-twitter"></i></span></a>
-                    <a class="youtube text-center" href="javascript:void(0)"><span><i class="fa fa-youtube"></i></span></a>
-                    <a class="googlePlus text-center" href="javascript:void(0)"><span><i class="fa fa-google"></i></span></a>
+                    <a class="facebook text-center" href="javascript:void(0)" data-toggle="modal" data-target="#receive"><span><i class="fa fa-bitcoin"></i></span></a>
                 </div>
             </div>
         </div>
@@ -59,16 +56,16 @@
             </div>
             <div class="card-body">
                 <span>Available Balance</span>
-                <h3>{{number_format((float)auth()->user()->balance()['btc'], 6)}} BTC</h3>
+                <h3>{{auth()->user()->address()['value']}}</h3>
 
                 <div class="d-flex justify-content-between my-4">
                     <div>
                         <p class="mb-1">Total Sent</p>
-                        <h4>{{auth()->user()->activities->where('type', 'Sent')->sum('value')}} BTC</h4>
+                        <h4>{{auth()->user()->address()['sent']}}</h4>
                     </div>
                     <div>
                         <p class="mb-1">Total Received</p>
-                        <h4>{{auth()->user()->activities->where('type', 'Received')->sum('value')}} BTC</h4>
+                        <h4>{{auth()->user()->address()['received']}}</h4>
                     </div>
                 </div>
 
@@ -119,50 +116,21 @@
                 <a href="{{route('activities')}}">View More </a>
             </div>
             <div class="card-body pt-0">
-                @if(auth()->user()->activities->isEmpty())
+                @if(empty(auth()->user()->address()['trnx']))
                 <p>All your activities will appear here</p>
                 @else
                 <div class="transaction-table">
                     <div class="table-responsive">
                         <table class="table mb-0 table-responsive-sm">
                             <tbody>
-                                @foreach(auth()->user()->activities as $act)
-                                @if(strtolower($act->type) == 'sent')
+                                @foreach(auth()->user()->address()['trnx'] as $key => $act)
                                 <tr>
-                                    <td><span class="sold-thumb"><i class="la la-arrow-up"></i></span>
-                                    </td>
-
                                     <td>
-                                        <span class="badge badge-danger">{{ucfirst($act->type)}}</span>
+                                        {{$act->hash}}
                                     </td>
-                                    <td>
-                                        <i class="cc {{strtoupper($act->mode)}}"></i> {{strtoupper($act->mode)}}
-                                    </td>
-                                    <td>
-                                        {{ucfirst($act->summary)}}
-                                    </td>
-                                    <td class="text-danger">-{{strtoupper($act->value)}}</td>
-                                    <td>-{{$act->amount}}</td>
+                                    <td class="text-danger"><a href="https://www.blockchain.com/btc/tx/{{$act->hash}}" target="_blank">Explorer <i class="la la-external-link"></i></a></td>
                                 </tr>
-                                @endif
-                                @if(strtolower($act->type) == 'received')
-                                <tr>
-                                    <td><span class="sold-thumb"><i class="la la-arrow-down"></i></span>
-                                    </td>
-
-                                    <td>
-                                        <span class="badge badge-success">{{ucfirst($act->type)}}</span>
-                                    </td>
-                                    <td>
-                                        <i class="cc {{strtoupper($act->mode)}}"></i> {{strtoupper($act->mode)}}
-                                    </td>
-                                    <td>
-                                        {{ucfirst($act->summary)}}
-                                    </td>
-                                    <td class="text-success">+{{strtoupper($act->value)}}</td>
-                                    <td>+{{$act->amount}}</td>
-                                </tr>
-                                @endif
+                                @if($key == 4) @break @endif
                                 @endforeach
                             </tbody>
                         </table>

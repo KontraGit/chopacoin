@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +19,50 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('price', function () {
+    return view('price');
+});
+
+Route::get('wallet', function () {
+    return view('wallet');
+});
+
+Route::get('about', function () {
+    return view('about');
+});
+
+Route::get('career', function () {
+    return view('career');
+});
+
+Route::get('terms', function () {
+    return redirect(url('faqs'));
+});
+
+Route::get('privacy', function () {
+    return redirect(url('faqs'));
+});
+
+Route::get('faqs', function () {
+    return view('faqs');
+});
+
+Route::get('contact', function () {
+    return view('contact');
+});
+
+Route::post('contact', function (Request $request) {
+    $request->validate([
+        'name' => 'required|string',
+        'email' => 'required|email',
+        'message' => 'required|string|max:191',
+    ]);
+
+    alert()->success('Message sent');
+
+    return back();
+})->name('contact');
+
 Auth::routes(['verify' => true, 'register' => true, 'login' => true]);
 
 Route::prefix('dashboard')->middleware(['auth', 'verified'])->group(function () {
@@ -29,6 +74,12 @@ Route::prefix('dashboard')->middleware(['auth', 'verified'])->group(function () 
     Route::prefix('exchange')->group(function () {
 
         Route::get('', [App\Http\Controllers\ExchangeController::class, 'index'])->name('exchange');
+
+        Route::post('buy', [App\Http\Controllers\ExchangeController::class, 'buy'])->name('buy');
+
+        Route::post('sell', [App\Http\Controllers\ExchangeController::class, 'sell'])->name('sell');
+
+        Route::post('send', [App\Http\Controllers\ExchangeController::class, 'send'])->name('send');
     });
 
     #account

@@ -4,7 +4,7 @@
 <div class="card-header justify-content-center">
     <h4 class="card-title">Reset password</h4>
 </div>
-<div class="card-body">
+<div class="card-body p-4">
     <form method="POST" action="{{ route('password.update') }}" name="myform" class="signup_validate">
         @csrf
         <input type="hidden" name="token" value="{{ $token }}">

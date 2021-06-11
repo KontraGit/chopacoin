@@ -4,7 +4,7 @@
 <div class="card-header justify-content-center">
     <h4 class="card-title">Reset password</h4>
 </div>
-<div class="card-body">
+<div class="card-body p-4">
     @if (session('status'))
     <div class="alert alert-success" role="alert">
         {{ session('status') }}

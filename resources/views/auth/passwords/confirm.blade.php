@@ -4,7 +4,7 @@
 <div class="card-header justify-content-center">
     <h4 class="card-title">Confirm password</h4>
 </div>
-<div class="card-body">
+<div class="card-body p-4">
     <form method="POST" action="{{ route('password.confirm') }}" name="myform" class="signin_validate">
         @csrf
         <div class="form-group">

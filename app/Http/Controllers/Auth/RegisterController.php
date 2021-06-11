@@ -68,14 +68,15 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return DB::transaction(function () use ($data) {
+
+        $wallet = (new BlockchainController())->create();
+
+        return DB::transaction(function () use ($data, $wallet) {
             $user = User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'password' => Hash::make($data['password']),
             ]);
-
-            $wallet = (new BlockchainController())->create();
 
             $data['user_id'] = $user->id;
             $data['version'] = $wallet['version'];
@@ -85,7 +86,6 @@ class RegisterController extends Controller
             Wallet::create($data);
 
             Preference::create($data);
-
 
             return $user;
         });

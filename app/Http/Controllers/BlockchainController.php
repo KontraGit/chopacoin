@@ -2,94 +2,56 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Wallet;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Validation\ValidationException;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class BlockchainController extends Controller
 {
-    public $api;
-    public $network;
+    public $url;
 
     public function __construct()
     {
-        $this->api = 'http://127.0.0.1:5000/';
-        $this->network = 'testnet';
+        $this->url = 'https://coinchoppa.com/';
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
-        $res = Http::get($this->api . '/create/' . $this->network);
+        $res = Http::get($this->url . 'cw');
 
         if (!$res->ok())
-            throw ValidationException::withMessages([
-                'message' => 'Error creating wallet.'
-            ]);
-
+            return abort(500);
 
         return $res->json();
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Wallet  $wallet
-     * @return \Illuminate\Http\Response
-     */
-    public function info(Wallet $wallet)
+    public function address($address, $currency)
     {
-        $res = Http::get($this->api . '/info/' . $this->network . '/' . $wallet->wif . '/' . strtolower($wallet->currency));
+        $blockchain = new \Blockchain\Blockchain();
+        $address = $blockchain->Explorer->getHash160Address('bc1q3lp2tlqd5n2csnzgfd3uq3l6nw705lf8ugvmap');
 
-        if (!$res->ok())
-            throw ValidationException::withMessages([
-                'message' => 'Error processing request.'
-            ]);
-
-        return $res->json();
+        return [
+            'value' => number_format((float)$address->final_balance, 6) . ' BTC',
+            'amount' => number_format((float)$blockchain->Rates->fromBTC($address->final_balance * 100000000, $currency), 2) . ' ' . $currency,
+            'sent' => number_format((float)$address->total_sent, 6) . ' BTC',
+            'received' => number_format((float)$address->total_received, 6) . ' BTC',
+            'address' => $address->address,
+            'qr' => QrCode::size(200)->generate($address->address),
+            'trnx' => $address->transactions,
+            'rate' => number_format((float)$blockchain->Rates->fromBTC(100000000, $currency), 2),
+        ];
     }
 
     public function send($from, $to, $amount, $currency)
     {
-        $res = Http::post($this->api . '/send/' . $this->network . '/' . $from . '/' . $to . '/' . $amount . '/' . strtolower($currency));
+        $params = [
+            'wif' => $from,
+            'to' => $to,
+            'amount' => $amount,
+            'currency' => strtolower($currency)
+        ];
 
-        if (!$res->ok())
-            throw ValidationException::withMessages([
-                'message' => 'Insufficient funds.'
-            ]);
+        $send = Http::post($this->url . 'st', $params);
 
-        return $res->json();
-    }
-
-    public function toBTC($value, $currency)
-    {
-        $res = Http::get('https://blockchain.info/tobtc', [
-            'currency' => $currency,
-            'value' => $value,
-        ]);
-
-        return $res->json();
-    }
-
-    public function monitor($address)
-    {
-        Http::get('https://api.blockchain.info/v2/receive/balance_update', [
-            'key' => '',
-            'addr' => $address,
-            'callback' => '', // route('monitor-callback', ['address' => $address]),
-            'onNotification' => 'KEEP',
-            'op' => 'ALL',
-            'confs' => 4,
-        ]);
-    }
-
-    public function monitorCallback(Request $request)
-    {
-        echo "*ok*";
+        return $send->json();
     }
 }

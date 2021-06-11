@@ -1,168 +1,182 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="row">
-    <div class="col-xl-5 col-lg-5 col-md-12">
+<div class="row justify-content-center mt-md-5">
+    <div class="col-md-5">
         <div class="card">
             <div class="card-body">
                 <div class="buy-sell-widget">
                     <ul class="nav nav-tabs">
-                        <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#buy">Buy</a>
+                        <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#buy" id="buy-tab">Buy</a>
                         </li>
-                        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#sell">Sell</a>
+                        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#sell" id="sell-tab">Sell</a>
                         </li>
                     </ul>
                     <div class="tab-content tab-content-default">
                         <div class="tab-pane fade show active" id="buy" role="tabpanel">
-                            <form method="post" name="myform" class="currency_validate">
+                            <form method="post" action="{{route('buy')}}" class="currency_validate">
+                                @csrf
                                 <div class="form-group">
                                     <label class="mr-sm-2">Currency</label>
                                     <div class="input-group mb-3">
-                                        <select name='currency' class="form-control">
+                                        <select id="buy-currency" class="form-control @error('currency') is-invalid @enderror" name="currency" value="{{ old('currency') }}" required>
                                             <option data-display="Bitcoin" value="bitcoin">Bitcoin
                                             </option>
-                                            <option value="litecoin">Litecoin</option>
                                         </select>
-                                        <input type="text" name="usd_amount" class="form-control" value="125.00 USD">
+                                        @error('currency')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="mr-sm-2">Payment Method</label>
+                                    <label class="mr-sm-2">Amount to Buy</label>
                                     <div class="input-group mb-3">
-                                        <select name='currency' class="form-control">
-                                            <option data-display="Bitcoin" value="bitcoin">Bitcoin
-                                            </option>
-                                            <option value="litecoin">Litecoin</option>
-                                        </select>
-                                        <input type="text" name="usd_amount" class="form-control" value="125.00 USD">
+                                        <div class="input-group">
+                                            <input type="text" id="buy-val" class="form-control @error('value') is-invalid @enderror" onkeypress="return isNumberKey(this, event);" name=" value" value="{{ old('value') }}" required placeholder="0.0214 BTC">
+                                            <input type="text" id="buy-amt" class="form-control @error('amount') is-invalid @enderror" onkeypress="return isNumberKey(this, event);" name=" amount" value="{{ old('amount') }}" required placeholder="125.00 USD">
+                                        </div>
+                                        @error('value')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
+                                        @error('amount')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
+                                        <div class="d-flex justify-content-between mt-3">
+                                            <p class="mb-0">Minimum: $500.00</p>
+                                        </div>
                                     </div>
                                 </div>
-
-                                <div class="form-group">
-                                    <label class="mr-sm-2">Enter your amount</label>
-                                    <div class="input-group">
-                                        <input type="text" name="currency_amount" class="form-control" placeholder="0.0214 BTC">
-                                        <input type="text" name="usd_amount" class="form-control" placeholder="125.00 USD">
-                                    </div>
-                                    <div class="d-flex justify-content-between mt-3">
-                                        <p class="mb-0">Monthly Limit</p>
-                                        <h6 class="mb-0">$49750 remaining</h6>
-                                    </div>
-                                </div>
-                                <button type="submit" name="submit" class="btn btn-success btn-block">Exchange
-                                    Now</button>
-
+                                <button type="submit" name="submit" class="btn btn-success btn-block">Proceed to Payment</button>
                             </form>
+
+                            <p class="py-4">Note: Bitcoins will be sent to your {{config('app.name')}} wallet address once transaction has been confirmed by our system!</p>
                         </div>
                         <div class="tab-pane fade" id="sell">
-                            <form method="post" name="myform" class="currency2_validate">
+                            <form method="post" action="{{route('sell')}}" class="currency2_validate">
+                                @csrf
                                 <div class="form-group">
-                                    <label class="mr-sm-2">Currency</label>
+                                    <label class="mr-sm-2">Bank Name</label>
                                     <div class="input-group mb-3">
-                                        <select name='currency' class="form-control">
-                                            <option data-display="Bitcoin" value="bitcoin">Bitcoin
-                                            </option>
-                                            <option value="litecoin">Litecoin</option>
-                                        </select>
-                                        <input type="text" name="usd_amount" class="form-control" value="125.00 USD">
+                                        <input type="text" class="form-control @error('bank_name') is-invalid @enderror" name="bank_name" value="{{ old('bank_name') }}" required placeholder="e.g Wells Fargo">
+                                        @error('bank_name')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="mr-sm-2">Payment Method</label>
+                                    <label class="mr-sm-2">Account Number</label>
                                     <div class="input-group mb-3">
-                                        <select name='currency' class="form-control">
-                                            <option data-display="Bitcoin" value="bitcoin">Bitcoin
-                                            </option>
-                                            <option value="litecoin">Litecoin</option>
-                                        </select>
-                                        <input type="text" name="usd_amount" class="form-control" value="125.00 USD">
+                                        <input type="text" class="form-control @error('account_number') is-invalid @enderror no" name="account_number" value="{{ old('account_number') }}" required placeholder="xxxxxxxxxx">
+                                        @error('account_number')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="mr-sm-2">Enter your amount</label>
+                                    <label class="mr-sm-2">Amount to Sell</label>
                                     <div class="input-group">
-                                        <input type="text" name="currency_amount" class="form-control" placeholder="0.0214 BTC">
-                                        <input type="text" name="usd_amount" class="form-control" placeholder="125.00 USD">
+                                        <div class="input-group">
+                                            <input type="text" id="sell-val" class="form-control @error('value') is-invalid @enderror" onkeypress="return isNumberKey(this, event);" name=" value" value="{{ old('value') }}" required placeholder="0.0214 BTC">
+                                            <input type="text" id="sell-amt" class="form-control @error('amount') is-invalid @enderror" onkeypress="return isNumberKey(this, event);" name=" amount" value="{{ old('amount') }}" required placeholder="125.00 USD">
+                                        </div>
+                                        @error('value')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
+                                        @error('amount')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
                                     </div>
                                     <div class="d-flex justify-content-between mt-3">
-                                        <p class="mb-0">Monthly Limit</p>
-                                        <h6 class="mb-0">$49750 remaining</h6>
+                                        <p class="mb-0">Minimum: $500.00</p>
                                     </div>
                                 </div>
-                                <button type="submit" name="submit" class="btn btn-success btn-block">Exchange
-                                    Now</button>
-
+                                <button type="submit" name="submit" class="btn btn-success btn-block">Exchange Now</button>
                             </form>
+                            <p class="py-4">Note: Payment will be sent to you to the account details provided once transaction has been confirmed by the network!</p>
                         </div>
                     </div>
                 </div>
 
             </div>
         </div>
-        <p class="p-4">Note: Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi cupiditate
-            suscipit explicabo voluptas eos in tenetur error temporibus dolorum. Nulla!</p>
     </div>
-    <div class="col-xl-7 col-lg-7 col-md-12">
+    <!-- <div class="col-xl-7 col-lg-7 col-md-12">
         <div class="card">
-            <div class="card-body">
+            <div class="card-body pt-0">
                 <div class="buyer-seller">
-                    <div class="d-flex justify-content-between mb-3">
-                        <div class="buyer-info">
-                            <div class="media">
-                                <img class="mr-3" src="{{asset('assets/images/profile/2.png')}}" alt="" width="50">
-                                <div class="media-body">
-                                    <h4>Buyer</h4>
-                                    <h5>Michael John</h5>
-                                    <a href="#">hello@example.com</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="seller-info text-right">
-                            <div class="media">
-                                <div class="media-body">
-                                    <h4>Seller</h4>
-                                    <h5>John Doe</h5>
-                                    <a href="#">hello@example.com</a>
-                                </div>
-                                <img class="ml-3" src="{{asset('assets/images/profile/1.png')}}" alt="" width="50">
-                            </div>
-                        </div>
-                    </div>
                     <div class="table-responsive">
                         <table class="table">
-                            <tbody>
+                            <tbody id="buy-preview">
                                 <tr>
-                                    <td><span class="text-primary">You are selling</span></td>
-                                    <td><span class="text-primary">0.00254 BTC</span></td>
+                                    <td><span class="text-primary">You are buying</span></td>
+                                    <td><span id="buy-value" class="text-primary">0.00254 BTC</span></td>
                                 </tr>
                                 <tr>
                                     <td>Payment Method</td>
-                                    <td>Bank of America Bank ***********5245</td>
+                                    <td>Credit / Debit Card</td>
                                 </tr>
                                 <tr>
-                                    <td>Exchange Rate</td>
-                                    <td>0.00212455 BTC</td>
+                                    <td>Recipient Address</td>
+                                    <td>{{auth()->user()->wallet->address}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Amount</td>
+                                    <td id="buy-amount">$854.00 USD</td>
                                 </tr>
                                 <tr>
                                     <td>Fee</td>
-                                    <td>$28.00 USD</td>
+                                    <td id="buy-fee" class="text-danger">$28.00 USD</td>
                                 </tr>
                                 <tr>
-                                    <td>Total</td>
-                                    <td>$854.00 USD</td>
+                                    <td> Total</td>
+                                    <td id="buy-total"> $1232.00 USD</td>
+                                </tr>
+                            </tbody>
+                            <tbody id="sell-preview" class="d-none">
+                                <tr>
+                                    <td><span class="text-primary">You are selling</span></td>
+                                    <td><span id="sell-value" class="text-primary">0.00254 BTC</span></td>
                                 </tr>
                                 <tr>
-                                    <td>Vat</td>
-                                    <td>
-                                        <div class="text-danger">$25.00 USD</div>
-                                    </td>
+                                    <td>Payment Method</td>
+                                    <td>Bitcoin</td>
                                 </tr>
                                 <tr>
-                                    <td> Sub Total</td>
-                                    <td> $1232.00 USD</td>
+                                    <td>Bank Name</td>
+                                    <td id="sell-bank">Wells Fargo</td>
+                                </tr>
+                                <tr>
+                                    <td>Account Number</td>
+                                    <td id="sell-account">Wells Fargo</td>
+                                </tr>
+                                <tr>
+                                    <td>Amount</td>
+                                    <td id="sell-amount">$854.00 USD</td>
+                                </tr>
+                                <tr>
+                                    <td>Fee</td>
+                                    <td id="sell-fee" class="text-danger">$28.00 USD</td>
+                                </tr>
+                                <tr>
+                                    <td> Total</td>
+                                    <td id="sell-total"> $1232.00 USD</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -170,10 +184,10 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 </div>
 
-<div class="row">
+<!-- <div class="row">
     <div class="col-xl-6 col-xxl-12">
         <div class="card">
             <div class="card-header">
@@ -259,5 +273,5 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 @endsection

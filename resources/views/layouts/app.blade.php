@@ -2,12 +2,19 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
+    <script data-ad-client="ca-pub-4480849597660479" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="keywords" content="best wallet, bitcoin cash wallet, bitcoin wallet, btc wallet, buy bitcoin, buy cryptocurrency, coin wallet, crypto wallet, cryptocurrency wallet, digital wallet, ether wallet, ethereum wallet, safest wallet, secure crypto wallet, usd to bitcoin, {{config('app.name')}}s, venture, fund, {{config('app.name')}} ventures, {{config('app.name')}} fund" />
+    <meta name="description" content="{{config('app.name')}}.com is the most popular place to securely buy, store, and trade Bitcoin, Ethereum, and other top cryptocurrencies. " />
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    @guest
+    @else
+    <meta name="currency" content="{{ auth()->user()->wallet->currency }}">
+    @endguest
 
     <title>{{ config('app.name') }}</title>
 
@@ -18,8 +25,22 @@
     <link rel="stylesheet" href="{{asset('assets/vendor/waves/waves.min.css')}}">
     <link rel="stylesheet" href="{{asset('assets/vendor/toastr/toastr.min.css')}}">
     <link rel="stylesheet" href="{{asset('assets/css/style.css')}}">
+    <link rel="stylesheet" href="{{asset('assets/css/custom.css')}}">
 
     <script src="{{asset('assets/js/sweetalert.min.js')}}"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BQ4PHB6J4Q"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'G-BQ4PHB6J4Q');
+    </script>
 </head>
 
 <body>
@@ -34,7 +55,6 @@
         </div>
         <div id="main-wrapper">
             @guest
-
             <div class="authincation">
                 <div class="container">
                     <div class="row justify-content-center align-items-center">
@@ -65,11 +85,11 @@
                                         <div class="account_money">
                                             <ul>
                                                 <li class="crypto">
-                                                    <span>{{number_format((float)auth()->user()->balance()['btc'], 6)}}</span>
+                                                    <span>{{auth()->user()->address()['value']}}</span>
                                                     <i class="cc BTC"></i>
                                                 </li>
                                                 <li class="usd">
-                                                    <span>{{number_format((float)auth()->user()->balance()['fiat'], 2).' '.auth()->user()->wallet->currency}}</span>
+                                                    <span>{{auth()->user()->address()['amount']}}</span>
                                                 </li>
                                             </ul>
                                         </div>
@@ -131,19 +151,6 @@
                     </ul>
                 </div>
             </div>
-            <div class="page-title dashboard">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-xl-12">
-                            <div class="page-title-content">
-                                <p>Welcome Back,
-                                    <span> {{auth()->user()->name}}</span>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="content-body">
                 <div class="container-fluid">
                     @yield('content')
@@ -172,6 +179,34 @@
             </div>
             @endguest
         </div>
+        @guest
+        @else
+        <div class="modal fade" id="receive" tabindex="-1" aria-labelledby="receiveLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="receiveLabel">Bitcoin Address</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-center">
+                        {{auth()->user()->address()['qr']}}
+                        <div class="card-body mt-3 pb-0">
+                            <input type="text" id="copyTarget" class="form-control border-0 text-center" readonly value="{{auth()->user()->address()['address']}}">
+                        </div>
+                        <div class="card-body">
+                            <p>Scan or copy the bitcoin address above to receive your Bitcoin.</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Dismiss</button>
+                        <button type="button" id="copyAddress" class="btn btn-success">Copy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endguest
     </div>
     <script src="{{asset('assets/js/global.js')}}"></script>
 
@@ -194,6 +229,22 @@
     <!-- <script src="./js/dashboard.js')}}"></script> -->
     <script src="{{asset('assets/js/dashboard.js')}}"></script>
     <script src="{{asset('assets/js/scripts.js')}}"></script>
+
+    <!--Start of Tawk.to Script-->
+    <script type="text/javascript">
+        var Tawk_API = Tawk_API || {},
+            Tawk_LoadStart = new Date();
+        (function() {
+            var s1 = document.createElement("script"),
+                s0 = document.getElementsByTagName("script")[0];
+            s1.async = true;
+            s1.src = 'https://embed.tawk.to/60b63f536699c7280daa1aca/1f73ueo9i';
+            s1.charset = 'UTF-8';
+            s1.setAttribute('crossorigin', '*');
+            s0.parentNode.insertBefore(s1, s0);
+        })();
+    </script>
+    <!--End of Tawk.to Script-->
 </body>
 
 </html>
