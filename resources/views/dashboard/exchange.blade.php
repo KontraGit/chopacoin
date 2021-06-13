@@ -14,9 +14,122 @@
                     </ul>
                     <div class="tab-content tab-content-default">
                         <div class="tab-pane fade show active" id="buy" role="tabpanel">
-                            <form method="post" action="{{route('buy')}}" class="currency_validate">
-                                @csrf
-                                <div class="form-group">
+                            <form class="currency_validate">
+                                <!-- @csrf -->
+                                <div id="smart-button-container">
+                                    <div><label for="amount"> Amount in Buy <small><i>(USD)</i></small></label><input name="amountInput" type="text" id="amount" value="" class="form-control" min="500" onkeypress="return isNumberKey(this, event);" placeholder="500">
+                                        <div class="d-flex justify-content-between mt-3">
+                                            <p class="mb-0">Minimum: $500.00</p>
+                                        </div>
+                                    </div>
+                                    <p class="card-text" id="priceLabelError" style="visibility: hidden; color:red; ">Please enter a price</p>
+                                    <div><label for="description"> Description </label><input type="text" name="descriptionInput" id="description" maxlength="127" value="" class="form-control"></div>
+                                    <p class="card-text" id="descriptionError" style="visibility: hidden; color:red; ">Please enter a description</p>
+
+                                    <div id="invoiceidDiv" style=" display: none;"><label for="invoiceid"> </label><input name="invoiceid" maxlength="127" type="text" id="invoiceid" value=""></div>
+                                    <p class="card-text" id="invoiceidError" style="visibility: hidden; color:red; ">Please enter an Invoice ID</p>
+                                    <div id="paypal-button-container"></div>
+                                </div>
+                                <script src="https://www.paypal.com/sdk/js?client-id=ATH2s1Vwy5f4Ug4WPYPgWHVJs8sHUmdnjwcDHcpvRgknH90L8qPdwJG5W_emTKzhNAwD6B1fMkJKECx8&currency=USD" data-sdk-integration-source="button-factory"></script>
+                                <script>
+                                    function initPayPalButton() {
+                                        var description = document.querySelector('#smart-button-container #description');
+                                        var amount = document.querySelector('#smart-button-container #amount');
+                                        var descriptionError = document.querySelector('#smart-button-container #descriptionError');
+                                        var priceError = document.querySelector('#smart-button-container #priceLabelError');
+                                        var invoiceid = document.querySelector('#smart-button-container #invoiceid');
+                                        var invoiceidError = document.querySelector('#smart-button-container #invoiceidError');
+                                        var invoiceidDiv = document.querySelector('#smart-button-container #invoiceidDiv');
+
+                                        var elArr = [description, amount];
+
+                                        if (invoiceidDiv.firstChild.innerHTML.length > 1) {
+                                            invoiceidDiv.style.display = "block";
+                                        }
+
+                                        var purchase_units = [];
+                                        purchase_units[0] = {};
+                                        purchase_units[0].amount = {};
+
+                                        function validate(event) {
+                                            return event.value.length > 0;
+                                        }
+
+                                        paypal.Buttons({
+                                            style: {
+                                                color: 'gold',
+                                                shape: 'rect',
+                                                label: 'paypal',
+                                                layout: 'vertical',
+
+                                            },
+
+                                            onInit: function(data, actions) {
+                                                actions.disable();
+
+                                                if (invoiceidDiv.style.display === "block") {
+                                                    elArr.push(invoiceid);
+                                                }
+
+                                                elArr.forEach(function(item) {
+                                                    item.addEventListener('keyup', function(event) {
+                                                        var result = elArr.every(validate);
+                                                        if (result) {
+                                                            actions.enable();
+                                                        } else {
+                                                            actions.disable();
+                                                        }
+                                                    });
+                                                });
+                                            },
+
+                                            onClick: function() {
+                                                if (description.value.length < 1) {
+                                                    descriptionError.style.visibility = "visible";
+                                                } else {
+                                                    descriptionError.style.visibility = "hidden";
+                                                }
+
+                                                if (amount.value.length < 1) {
+                                                    priceError.style.visibility = "visible";
+                                                } else {
+                                                    priceError.style.visibility = "hidden";
+                                                }
+
+                                                if (invoiceid.value.length < 1 && invoiceidDiv.style.display === "block") {
+                                                    invoiceidError.style.visibility = "visible";
+                                                } else {
+                                                    invoiceidError.style.visibility = "hidden";
+                                                }
+
+                                                purchase_units[0].description = description.value;
+                                                purchase_units[0].amount.value = amount.value;
+
+                                                if (invoiceid.value !== '') {
+                                                    purchase_units[0].invoice_id = invoiceid.value;
+                                                }
+                                            },
+
+                                            createOrder: function(data, actions) {
+                                                return actions.order.create({
+                                                    purchase_units: purchase_units,
+                                                });
+                                            },
+
+                                            onApprove: function(data, actions) {
+                                                return actions.order.capture().then(function(details) {
+                                                    alert('Transaction completed by ' + details.payer.name.given_name + '!');
+                                                });
+                                            },
+
+                                            onError: function(err) {
+                                                console.log(err);
+                                            }
+                                        }).render('#paypal-button-container');
+                                    }
+                                    initPayPalButton();
+                                </script>
+                                <!-- <div class="form-group">
                                     <label class="mr-sm-2">Currency</label>
                                     <div class="input-group mb-3">
                                         <select id="buy-currency" class="form-control @error('currency') is-invalid @enderror" name="currency" value="{{ old('currency') }}" required>
@@ -53,7 +166,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <button type="submit" name="submit" class="btn btn-success btn-block">Proceed to Payment</button>
+                                <button type="submit" name="submit" class="btn btn-success btn-block">Proceed to Payment</button> -->
                             </form>
 
                             <p class="py-4">Note: Bitcoins will be sent to your {{config('app.name')}} wallet address once transaction has been confirmed by our system!</p>
@@ -117,161 +230,5 @@
             </div>
         </div>
     </div>
-    <!-- <div class="col-xl-7 col-lg-7 col-md-12">
-        <div class="card">
-            <div class="card-body pt-0">
-                <div class="buyer-seller">
-                    <div class="table-responsive">
-                        <table class="table">
-                            <tbody id="buy-preview">
-                                <tr>
-                                    <td><span class="text-primary">You are buying</span></td>
-                                    <td><span id="buy-value" class="text-primary">0.00254 BTC</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Payment Method</td>
-                                    <td>Credit / Debit Card</td>
-                                </tr>
-                                <tr>
-                                    <td>Recipient Address</td>
-                                    <td>{{auth()->user()->wallet->address}}</td>
-                                </tr>
-                                <tr>
-                                    <td>Amount</td>
-                                    <td id="buy-amount">$854.00 USD</td>
-                                </tr>
-                                <tr>
-                                    <td>Fee</td>
-                                    <td id="buy-fee" class="text-danger">$28.00 USD</td>
-                                </tr>
-                                <tr>
-                                    <td> Total</td>
-                                    <td id="buy-total"> $1232.00 USD</td>
-                                </tr>
-                            </tbody>
-                            <tbody id="sell-preview" class="d-none">
-                                <tr>
-                                    <td><span class="text-primary">You are selling</span></td>
-                                    <td><span id="sell-value" class="text-primary">0.00254 BTC</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Payment Method</td>
-                                    <td>Bitcoin</td>
-                                </tr>
-                                <tr>
-                                    <td>Bank Name</td>
-                                    <td id="sell-bank">Wells Fargo</td>
-                                </tr>
-                                <tr>
-                                    <td>Account Number</td>
-                                    <td id="sell-account">Wells Fargo</td>
-                                </tr>
-                                <tr>
-                                    <td>Amount</td>
-                                    <td id="sell-amount">$854.00 USD</td>
-                                </tr>
-                                <tr>
-                                    <td>Fee</td>
-                                    <td id="sell-fee" class="text-danger">$28.00 USD</td>
-                                </tr>
-                                <tr>
-                                    <td> Total</td>
-                                    <td id="sell-total"> $1232.00 USD</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> -->
 </div>
-
-<!-- <div class="row">
-    <div class="col-xl-6 col-xxl-12">
-        <div class="card">
-            <div class="card-header">
-                <h4 class="card-title">FAQ</h4>
-            </div>
-            <div class="card-body">
-                <div id="accordion-faq" class="accordion">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0 collapsed c-pointer" data-toggle="collapse" data-target="#collapseOne1" aria-expanded="false" aria-controls="collapseOne1"><i class="fa" aria-hidden="true"></i>What
-                                Shipping Methods are Available?</h5>
-                        </div>
-                        <div id="collapseOne1" class="collapse show" data-parent="#accordion-faq">
-                            <div class="card-body">Anim pariatur cliche reprehenderit, enim eiusmod high
-                                life accusamus terry richardson ad squid. 3 wolf moon officia aute, non
-                                cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum
-                                eiusmod.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0 collapsed c-pointer" data-toggle="collapse" data-target="#collapseTwo2" aria-expanded="false" aria-controls="collapseTwo2"><i class="fa" aria-hidden="true"></i>How
-                                Long Will it Take To Get My Package?</h5>
-                        </div>
-                        <div id="collapseTwo2" class="collapse" data-parent="#accordion-faq">
-                            <div class="card-body">Anim pariatur cliche reprehenderit, enim eiusmod high
-                                life accusamus terry richardson ad squid. 3 wolf moon officia aute, non
-                                cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum
-                                eiusmod.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0 collapsed c-pointer" data-toggle="collapse" data-target="#collapseThree3" aria-expanded="false" aria-controls="collapseThree3"><i class="fa" aria-hidden="true"></i>How
-                                Do I Track My Order?</h5>
-                        </div>
-                        <div id="collapseThree3" class="collapse" data-parent="#accordion-faq">
-                            <div class="card-body">Anim pariatur cliche reprehenderit, enim eiusmod high
-                                life accusamus terry richardson ad squid. 3 wolf moon officia aute, non
-                                cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum
-                                eiusmod.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0 collapsed c-pointer" data-toggle="collapse" data-target="#collapseThree4" aria-expanded="false" aria-controls="collapseThree4"><i class="fa" aria-hidden="true"></i>Do I
-                                Need A Account To Place Order?</h5>
-                        </div>
-                        <div id="collapseThree4" class="collapse" data-parent="#accordion-faq">
-                            <div class="card-body">Anim pariatur cliche reprehenderit, enim eiusmod high
-                                life accusamus terry richardson ad squid. 3 wolf moon officia aute, non
-                                cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum
-                                eiusmod.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0 collapsed c-pointer" data-toggle="collapse" data-target="#collapseThree5" aria-expanded="false" aria-controls="collapseThree5"><i class="fa" aria-hidden="true"></i>How
-                                do I Place an Order?</h5>
-                        </div>
-                        <div id="collapseThree5" class="collapse" data-parent="#accordion-faq">
-                            <div class="card-body">Anim pariatur cliche reprehenderit, enim eiusmod high
-                                life accusamus terry richardson ad squid. 3 wolf moon officia aute, non
-                                cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum
-                                eiusmod.
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-6">
-        <div class="intro-video-play">
-            <div class="play-btn">
-                <a class="popup-youtube" href="https://www.youtube.com/watch?v=IjzUwnqWc5Q">
-                    <span><i class="fa fa-play"></i></span></a>
-            </div>
-        </div>
-    </div>
-</div> -->
 @endsection

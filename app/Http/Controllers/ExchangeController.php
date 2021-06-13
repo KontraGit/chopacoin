@@ -22,10 +22,10 @@ class ExchangeController extends Controller
         $request->validate([
             'currency' => 'required|string',
             'value' => 'required|numeric',
-            'amount' => 'required|numeric',
+            'amount' => 'required|numeric|min:500',
         ]);
 
-        alert()->success('Payment sent!');
+        alert()->warning('This feature is not available yet!')->autoclose(3500);
 
         return back();
     }
@@ -37,15 +37,15 @@ class ExchangeController extends Controller
             'bank_name' => 'required|string',
             'account_number' => 'required|numeric',
             'value' => 'required|numeric',
-            'amount' => 'required|numeric',
+            'amount' => 'required|numeric|min:500',
         ]);
 
         $hash = (new BlockchainController())->send($request->user()->wallet->wif, '1CqHAoRxxgNGF4dac9qXSwkPFPMhcGgj6z', $request->value, 'btc');
 
         if (!$hash) {
-            alert()->error('Insufficient funds!');
+            alert()->error('Insufficient funds!')->autoclose(3500);
         } else {
-            alert()->success('Payment sent!');
+            alert()->success('Payment sent!')->autoclose(3500);
         }
         return back();
     }
@@ -63,9 +63,9 @@ class ExchangeController extends Controller
         $hash = (new BlockchainController())->send($request->user()->wallet->wif, $request->recipient_address, $request->value, 'btc');
 
         if (!$hash) {
-            alert()->error('Insufficient funds!');
+            alert()->error('Insufficient funds!')->autoclose(3500);
         } else {
-            alert()->success('Payment sent!');
+            alert()->success('Payment sent!')->autoclose(3500);
         }
         return back();
     }

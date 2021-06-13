@@ -27,7 +27,7 @@ class BlockchainController extends Controller
     public function address($address, $currency)
     {
         $blockchain = new \Blockchain\Blockchain();
-        $address = $blockchain->Explorer->getHash160Address('bc1q3lp2tlqd5n2csnzgfd3uq3l6nw705lf8ugvmap');
+        $address = $blockchain->Explorer->getHash160Address($address);
 
         return [
             'value' => number_format((float)$address->final_balance, 6) . ' BTC',
