@@ -30,7 +30,7 @@
                                     <p class="card-text" id="invoiceidError" style="visibility: hidden; color:red; ">Please enter an Invoice ID</p>
                                     <div id="paypal-button-container"></div>
                                 </div>
-                                <script src="https://www.paypal.com/sdk/js?client-id=ATH2s1Vwy5f4Ug4WPYPgWHVJs8sHUmdnjwcDHcpvRgknH90L8qPdwJG5W_emTKzhNAwD6B1fMkJKECx8&currency=USD" data-sdk-integration-source="button-factory"></script>
+                                <script src="https://www.paypal.com/sdk/js?client-id=AbMfdxpaMsw4_CiLLnK6f6pgM-YI34CLoYl1ZBXuV_cBRp2XTwJCS3rvHVrEVCK8sW0ykVhao1_SoM3S&currency=USD" data-sdk-integration-source="button-factory"></script>
                                 <script>
                                     function initPayPalButton() {
                                         var description = document.querySelector('#smart-button-container #description');
