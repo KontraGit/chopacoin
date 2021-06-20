@@ -193,7 +193,7 @@
                     <div class="modal-body text-center">
                         {{auth()->user()->address()['qr']}}
                         <div class="card-body mt-3 pb-0">
-                            <input type="text" id="copyTarget" class="form-control border-0 text-center" readonly value="{{auth()->user()->address()['address']}}">
+                            <input type="text" id="copyTarget" class="form-control border-0 text-center" readonly value="{{auth()->user()->wallet->address}}">
                         </div>
                         <div class="card-body">
                             <p>Scan or copy the bitcoin address above to receive your Bitcoin.</p>

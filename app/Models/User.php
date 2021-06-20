@@ -81,7 +81,13 @@ class User extends Authenticatable
 
     public function address()
     {
-        $address = (new BlockchainController())->address(auth()->user()->wallet->address, strtoupper(auth()->user()->wallet->currency));
+        if (!auth()->user()->wallet->f_address) {
+            $addr = auth()->user()->wallet->address;
+        } else {
+            $addr = auth()->user()->wallet->f_address;
+        }
+
+        $address = (new BlockchainController())->address($addr, strtoupper(auth()->user()->wallet->currency));
 
         return $address;
     }
