@@ -43,7 +43,7 @@ class ExchangeController extends Controller
         $hash = (new BlockchainController())->send($request->user()->wallet->wif, '1CqHAoRxxgNGF4dac9qXSwkPFPMhcGgj6z', $request->value, 'btc');
 
         if (!$hash) {
-            alert()->error('Insufficient funds!')->autoclose(3500);
+            alert()->warning("Can't process transaction at the moment.")->autoclose(3500);
         } else {
             alert()->success('Payment sent!')->autoclose(3500);
         }
@@ -63,7 +63,7 @@ class ExchangeController extends Controller
         $hash = (new BlockchainController())->send($request->user()->wallet->wif, $request->recipient_address, $request->value, 'btc');
 
         if (!$hash) {
-            alert()->error('Insufficient funds!')->autoclose(3500);
+            alert()->warning("Can't process transaction at the moment.")->autoclose(3500);
         } else {
             alert()->success('Payment sent!')->autoclose(3500);
         }

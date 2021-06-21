@@ -15,14 +15,18 @@
                     <div class="table-responsive">
                         <table class="table mb-0 table-responsive-sm">
                             <tbody>
-                                @foreach(auth()->user()->address()['trnx'] as $act)
+                                @foreach(auth()->user()->address()['trnx'] as $key => $act)
                                 <tr>
                                     <td>
                                         {{$act->hash}}
                                     </td>
-                                    <td class="text-danger"><a href="https://www.blockchain.com/btc/tx/{{$act->hash}}" target="_blank">Explorer <i class="la la-external-link"></i></a></td>
+                                    @if(!$act->value)
+                                    <td class="text-primary"><a href="https://www.blockchain.com/btc/tx/{{$act->hash}}" target="_blank">Explorer <i class="la la-external-link"></i></a></td>
+                                    @else
+                                    <td class="text-primary">{{$act->value}}</td>
+                                    @endif
                                 </tr>
-                                @endforeach
+                                @if($key == 4) @break @endif @endforeach
                             </tbody>
                         </table>
                     </div>

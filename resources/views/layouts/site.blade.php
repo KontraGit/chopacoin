@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <script data-ad-client="ca-pub-4480849597660479" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <!-- <script data-ad-client="ca-pub-4480849597660479" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -22,7 +22,7 @@
     <script src="{{asset('assets/js/sweetalert.min.js')}}"></script>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BQ4PHB6J4Q"></script>
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-BQ4PHB6J4Q"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -32,7 +32,7 @@
         gtag('js', new Date());
 
         gtag('config', 'G-BQ4PHB6J4Q');
-    </script>
+    </script> -->
 </head>
 
 <body>
@@ -197,7 +197,7 @@
     <script src="{{asset('assets/js/scripts.js')}}"></script>
 
     <!--Start of Tawk.to Script-->
-    <script type="text/javascript">
+    <!-- <script type="text/javascript">
         var Tawk_API = Tawk_API || {},
             Tawk_LoadStart = new Date();
         (function() {
@@ -209,7 +209,7 @@
             s1.setAttribute('crossorigin', '*');
             s0.parentNode.insertBefore(s1, s0);
         })();
-    </script>
+    </script> -->
     <!--End of Tawk.to Script-->
 </body>
 

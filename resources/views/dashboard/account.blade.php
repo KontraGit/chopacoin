@@ -128,10 +128,13 @@
                                     <td>
                                         {{$act->hash}}
                                     </td>
-                                    <td class="text-danger"><a href="https://www.blockchain.com/btc/tx/{{$act->hash}}" target="_blank">Explorer <i class="la la-external-link"></i></a></td>
+                                    @if(!$act->value)
+                                    <td class="text-primary"><a href="https://www.blockchain.com/btc/tx/{{$act->hash}}" target="_blank">Explorer <i class="la la-external-link"></i></a></td>
+                                    @else
+                                    <td class="text-primary">{{$act->value}}</td>
+                                    @endif
                                 </tr>
-                                @if($key == 4) @break @endif
-                                @endforeach
+                                @if($key == 4) @break @endif @endforeach
                             </tbody>
                         </table>
                     </div>
