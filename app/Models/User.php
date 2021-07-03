@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Http\Controllers\BlockchainController;
+use App\Http\Controllers\WalletController;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -81,10 +82,7 @@ class User extends Authenticatable
 
     public function address()
     {
-
-        $address = (new BlockchainController())->address(auth()->user()->wallet->address, strtoupper(auth()->user()->wallet->currency));
-
-        return $address;
+        return (new WalletController())->index();
     }
 
     public function greetings()

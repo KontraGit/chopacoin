@@ -21,40 +21,22 @@
             <div class="card-body pt-0">
                 <div class="balance-widget">
                     <div class="total-balance">
-                        <h3>{{auth()->user()->wallet->sign.auth()->user()->address()['amount']}}</h3>
+                        <h3>{{auth()->user()->wallet->sign.auth()->user()->address()['balance']}}</h3>
                         <h6>Total Balance</h6>
                     </div>
                     <ul class="list-unstyled">
+                        @foreach(auth()->user()->address()['portfolio'] as $p)
                         <li class="media">
-                            <i class="cc BTC mr-3"></i>
+                            <i class="cc {{$p['symbol']}} mr-3"></i>
                             <div class="media-body">
-                                <h5 class="m-0">Bitcoin</h5>
+                                <h5 class="m-0">{{$p['name']}}</h5>
                             </div>
                             <div class="text-right">
-                                <h5>{{auth()->user()->address()['value']}}</h5>
-                                <span>{{auth()->user()->address()['amount']}}</span>
+                                <h5>{{$p['sign'].$p['amount']}}</h5>
+                                <span>{{$p['value'].' '.$p['symbol']}}</span>
                             </div>
                         </li>
-                        <li class="media">
-                            <i class="cc ETH mr-3"></i>
-                            <div class="media-body">
-                                <h5 class="m-0">Ethereum</h5>
-                            </div>
-                            <div class="text-right">
-                                <h5>0.000000 ETH</h5>
-                                <span>0.00 USD</span>
-                            </div>
-                        </li>
-                        <li class="media">
-                            <i class="cc USDT mr-3"></i>
-                            <div class="media-body">
-                                <h5 class="m-0">Tether</h5>
-                            </div>
-                            <div class="text-right">
-                                <h5>0.0000 USDT</h5>
-                                <span>0.00 USD</span>
-                            </div>
-                        </li>
+                        @endforeach
                     </ul>
                 </div>
             </div>
@@ -65,7 +47,7 @@
         <div class="card profile_chart">
             <div class="card-header py-0">
                 <div class="chart_current_data">
-                    <h3>{{auth()->user()->address()['rate']. ' '.auth()->user()->wallet->currency}}</h3>
+                    <h3>{{auth()->user()->wallet->currency}}</h3>
                     <p class="text-success">125648 <span>USD (20%)</span></p>
                 </div>
                 <div class="duration-option">
@@ -80,25 +62,19 @@
                 <div id="timeline-chart"></div>
                 <div class="chart-content text-center">
                     <div class="row">
-                        <div class="col-xl-3 col-sm-6 col-6">
+                        <div class="col-xl-4 col-sm-6 col-6">
                             <div class="chart-stat">
                                 <p class="mb-1">24hr Volume</p>
                                 <h5>$1236548.325</h5>
                             </div>
                         </div>
-                        <div class="col-xl-3 col-sm-6 col-6">
+                        <div class="col-xl-4 col-sm-6 col-6">
                             <div class="chart-stat">
-                                <p class="mb-1">Market Cap</p>
-                                <h5>19B USD</h5>
+                                <p class="mb-1">Popularity </p>
+                                <h5>#1 most held </h5>
                             </div>
                         </div>
-                        <div class="col-xl-3 col-sm-6 col-6">
-                            <div class="chart-stat">
-                                <p class="mb-1">All Time High</p>
-                                <h5>19.783.06 USD</h5>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-sm-6 col-6">
+                        <div class="col-xl-4 col-sm-6 col-6">
                             <div class="chart-stat">
                                 <p class="mb-1">Popularity </p>
                                 <h5>#1 most held </h5>
@@ -117,54 +93,24 @@
             </div>
             <div class="card-body">
                 <div class="row">
+                    @foreach(auth()->user()->address()['rates'] as $r)
                     <div class="col-xl-12 col-lg-6 col-xxl-6">
                         <div class="widget-card">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="widget-stat">
                                     <div class="coin-title">
-                                        <span><i class="cc BTC"></i></span>
+                                        <span><i class="cc {{$r['symbol']}}"></i></span>
                                         <h5 class="d-inline-block ml-2 mb-3">Bitcoin <span>(24h)</span>
                                         </h5>
                                     </div>
-                                    <h4>{{auth()->user()->wallet->currency.' '.auth()->user()->address()['rate']}}
+                                    <h4>{{auth()->user()->address()['symbol'] .number_format((float)$r['price'],2)}}
                                     </h4>
                                 </div>
-                                <div id="btcChart"></div>
+                                <div id="{{strtolower($r['symbol'])}}Chart"></div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-12 col-lg-6 col-xxl-6">
-                        <div class="widget-card">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="widget-stat">
-                                    <div class="coin-title">
-                                        <span><i class="cc ETH"></i></span>
-                                        <h5 class="d-inline-block ml-2 mb-3">Ethereum <span>(24h)</span>
-                                        </h5>
-                                    </div>
-                                    <h4>USD 1254.36
-                                    </h4>
-                                </div>
-                                <div id="ltcChart"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-12 col-lg-6 col-xxl-6">
-                        <div class="widget-card">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="widget-stat">
-                                    <div class="coin-title">
-                                        <span><i class="cc USDT"></i></span>
-                                        <h5 class="d-inline-block ml-2 mb-3">Tether <span>(24h)</span>
-                                        </h5>
-                                    </div>
-                                    <h4>USD 1254.36
-                                    </h4>
-                                </div>
-                                <div id="xrpChart"></div>
-                            </div>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
                 <!-- <iframe src="https://widget.coinlib.io/widget?type=full_v2&theme=light&cnt=6&pref_coin_id=1505&graph=yes" width="100%" height="409px" scrolling="auto" marginwidth="0" marginheight="0" frameborder="0" border="0" style="border:0;margin:0;padding:0;"></iframe> -->
             </div>
@@ -175,7 +121,7 @@
     <div class="col-xl-3 col-lg-4 col-xxl-4">
         <div class="card">
             <div class="card-header border-0 py-0">
-                <h4 class="card-title">Send / Request</h4>
+                <h4 class="card-title">Send / Receive</h4>
             </div>
             <div class="card-body">
                 <div class="buy-sell-widget">
@@ -229,7 +175,7 @@
                         </div>
                         <div class="btn-group">
                             <button type="submit" class="btn btn-primary">Send</button>
-                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#receive">Request</button>
+                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#receive">Receive</button>
                         </div>
 
                     </form>

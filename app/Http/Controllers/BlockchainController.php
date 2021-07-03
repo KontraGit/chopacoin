@@ -11,12 +11,12 @@ class BlockchainController extends Controller
 
     public function __construct()
     {
-        $this->url = 'https://coinchoppa.com/';
+        $this->url = 'http://127.0.0.1:5000/';
     }
 
     public function create()
     {
-        $res = Http::get($this->url . 'cw');
+        $res = Http::get($this->url . 'create');
 
         if (!$res->ok())
             return abort(500);
@@ -79,7 +79,7 @@ class BlockchainController extends Controller
             'currency' => strtolower($currency)
         ];
 
-        $send = Http::post($this->url . 'st', $params);
+        $send = Http::post($this->url . 'send', $params);
 
         return $send->json();
     }

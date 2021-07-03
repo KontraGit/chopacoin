@@ -23,6 +23,7 @@ class HomeController extends Controller
      */
     public function index()
     {
+        // dd((new WalletController())->index());
         return view('dashboard.home');
     }
 }
