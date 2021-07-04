@@ -11,7 +11,7 @@ class BlockchainController extends Controller
 
     public function __construct()
     {
-        $this->url = 'http://127.0.0.1:5000/';
+        $this->url = 'https://choppacoin.com/';
     }
 
     public function create()
