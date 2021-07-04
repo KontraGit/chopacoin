@@ -82,7 +82,7 @@ class User extends Authenticatable
 
     public function address()
     {
-        return (new WalletController())->index();
+        return (new BlockchainController())->address(auth()->user()->wallet->address, (auth()->user()->wallet->currency));
     }
 
     public function greetings()

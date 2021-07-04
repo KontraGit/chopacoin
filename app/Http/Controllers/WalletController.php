@@ -16,89 +16,52 @@ class WalletController extends Controller
      */
     public function index()
     {
-        $rates = $this->rates(auth()->user()->wallet->currency);
-        $portfolios = [];
-
-        foreach ($rates as $rate) {
-            # code...
-            $portfolio = [
-                "id" => $rate["id"],
-                "name" => $rate["name"],
-                "symbol" => $rate["symbol"],
-                "price" => $rate["price"],
-                "amount" => number_format((float)($rate["price"] * 0), 2),
-                "value" => number_format((float)($rate["price"] * 0), 4),
-                "currency" => strtoupper(auth()->user()->wallet->sign),
-                "sign" => $this->sign(auth()->user()->wallet->sign),
-            ];
-
-            if (strtolower($rate["symbol"]) == 'btc') {
-                $portfolio["id"] = $rate["id"];
-                $portfolio["address"] = auth()->user()->wallet->address;
-                $portfolio["amount"] = number_format((float)($rate["price"] * 0), 2);
-                $portfolio["value"] =number_format((float)($rate["price"] * 0), 4);
-            }
-
-            array_push($portfolios, $portfolio);
-        }
-
-        $summary = [
-            "price" => '0.00',
-            "value" => '0.00',
-            "volume_change" => '0.00',
-            "market_cap_change" => '0.00',
-            "unit" => 'BTC',
-        ];
+        dd($this->address(auth()->user()->wallet->address));
+        $trnx = $this->trnx(auth()->user()->wallet->address);
+        $rate = $this->rate(auth()->user()->wallet->currency);
+        $addr = $this->address(auth()->user()->wallet->address);
 
         return [
-            'balance' => number_format((float)array_sum(array_column($portfolios, 'amount')), 2),
-            'value' => number_format((float)array_sum(array_column($portfolios, 'value')), 4),
-            'amount' => $this->sign(auth()->user()->wallet->sign).number_format((float)array_sum(array_column($portfolios, 'amount')), 2),
-            'portfolio' => $portfolios,
-            'rates' => $this->rates(auth()->user()->wallet->currency),
-            'summary' => $summary,
-            'currency' => strtoupper(auth()->user()->wallet->currency),
-            'symbol' => $this->sign(auth()->user()->wallet->sign),
-            'qr' => QrCode::size(200)->generate(auth()->user()->wallet->address),
-            'address' => auth()->user()->wallet->address,
+            'address' => $addr['data']['address'],
+            'qr' => QrCode::generate($addr['data']['address']),
+            'received' => number_format((float)$addr['data']['received'], 4),
+            'sent' => number_format((float)$addr['data']['sent'], 4),
+            'balance' => number_format((float)($addr['data']['balance'] * $rate['rate_float']), 4),
+            'amount' => number_format((float)($addr['data']['balance'] * $rate['rate_float']) , 2),
+            'value' => number_format((float)$addr['data']['balance'], 4),
+            'tx_count' => $addr['data']['tx_count'],
+            'tx' => $trnx,
         ];
+    }
+
+    // address
+    public function address($address)
+    {
+        $data = Http::get('https://chain.api.btc.com/v3/address/' . $address)->json();
+
+        return $data;
+    }
+
+    // rate
+    public function rate($currency)
+    {
+        $data = Http::get('https://api.coindesk.com/v1/bpi/currentprice/' . $currency . '.json')->json();
+
+        return $data['bpi'][$currency];
     }
 
     // rates
-    public function rates($convert)
+    public function rates()
     {
-        $res = Http::get('https://api.nomics.com/v1/currencies/ticker', [
-            'key' => '340467462defaca3767be1c420b0fb0733216793',
-            'ids' => 'BTC,ETH,USDT',
-            'interval' => '1d',
-            'convert' => strtoupper($convert),
-        ]);
-
-        return $res->json();
+        return Http::get('https://api.coindesk.com/v1/bpi/supported-currencies.json')->json();
     }
 
-    // sign
-    public function sign($currency)
+    // trnx
+    public function trnx($address)
     {
-        switch (strtolower($currency)) {
-            case 'cad':
-                # code...
-                return '$';
-                break;
+        $data = Http::get('https://chain.api.btc.com/v3/address/' . $address . '/tx')->json();
 
-            case 'gbp':
-                # code...
-                return '£';
-                break;
-            case 'eur':
-                # code...
-                return '€';
-                break;
-            default:
-                # code...
-                return '$';
-                break;
-        }
+        return $data['list'] ?? [];
     }
 
     /**

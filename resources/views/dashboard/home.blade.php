@@ -18,25 +18,19 @@
             <div class="card-header border-0 py-0">
                 <h4 class="card-title">Your Portfolio </h4>
             </div>
-            <div class="card-body pt-0">
+            <div class="card-body">
                 <div class="balance-widget">
-                    <div class="total-balance">
-                        <h3>{{auth()->user()->wallet->sign.auth()->user()->address()['balance']}}</h3>
-                        <h6>Total Balance</h6>
-                    </div>
                     <ul class="list-unstyled">
-                        @foreach(auth()->user()->address()['portfolio'] as $p)
                         <li class="media">
-                            <i class="cc {{$p['symbol']}} mr-3"></i>
+                            <i class="cc BTC mr-3"></i>
                             <div class="media-body">
-                                <h5 class="m-0">{{$p['name']}}</h5>
+                                <h5 class="m-0">Bitcoin</h5>
                             </div>
                             <div class="text-right">
-                                <h5>{{$p['sign'].$p['amount']}}</h5>
-                                <span>{{$p['value'].' '.$p['symbol']}}</span>
+                                <h5>{{auth()->user()->address()['amount']}}</h5>
+                                <span>{{auth()->user()->address()['value']}}</span>
                             </div>
                         </li>
-                        @endforeach
                     </ul>
                 </div>
             </div>
@@ -44,46 +38,8 @@
     </div>
 
     <div class="col-xl-6 col-lg-8 col-xxl-8">
-        <div class="card profile_chart">
-            <div class="card-header py-0">
-                <div class="chart_current_data">
-                    <h3>{{auth()->user()->wallet->currency}}</h3>
-                    <p class="text-success">125648 <span>USD (20%)</span></p>
-                </div>
-                <div class="duration-option">
-                    <a id="all" class="active">ALL</a>
-                    <a id="one_month" class="">1M</a>
-                    <a id="six_months">6M</a>
-                    <a id="one_year" class="">1Y</a>
-                    <a id="ytd" class="">YTD</a>
-                </div>
-            </div>
-            <div class="card-body">
-                <div id="timeline-chart"></div>
-                <div class="chart-content text-center">
-                    <div class="row">
-                        <div class="col-xl-4 col-sm-6 col-6">
-                            <div class="chart-stat">
-                                <p class="mb-1">24hr Volume</p>
-                                <h5>$1236548.325</h5>
-                            </div>
-                        </div>
-                        <div class="col-xl-4 col-sm-6 col-6">
-                            <div class="chart-stat">
-                                <p class="mb-1">Popularity </p>
-                                <h5>#1 most held </h5>
-                            </div>
-                        </div>
-                        <div class="col-xl-4 col-sm-6 col-6">
-                            <div class="chart-stat">
-                                <p class="mb-1">Popularity </p>
-                                <h5>#1 most held </h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- <iframe src="https://widget.coinlib.io/widget?type=chart&theme=light&coin_id=859&pref_coin_id=1505" width="100%" height="536px" scrolling="auto" marginwidth="0" marginheight="0" frameborder="0" border="0" style="border:0;margin:0;padding:0;line-height:14px;"></iframe> -->
-            </div>
+        <div class="card">
+            <iframe src="https://widget.coinlib.io/widget?type=single_v2&theme=light&coin_id=859&pref_coin_id=1505" width="100%" height="210px" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" border="0" style="border:0;margin:0;padding:0;line-height:14px;"></iframe>
         </div>
     </div>
     <div class="col-xl-3 col-lg-12 col-xxl-12">
@@ -93,24 +49,22 @@
             </div>
             <div class="card-body">
                 <div class="row">
-                    @foreach(auth()->user()->address()['rates'] as $r)
                     <div class="col-xl-12 col-lg-6 col-xxl-6">
                         <div class="widget-card">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="widget-stat">
                                     <div class="coin-title">
-                                        <span><i class="cc {{$r['symbol']}}"></i></span>
+                                        <span><i class="cc BTC"></i></span>
                                         <h5 class="d-inline-block ml-2 mb-3">Bitcoin <span>(24h)</span>
                                         </h5>
                                     </div>
-                                    <h4>{{auth()->user()->address()['symbol'] .number_format((float)$r['price'],2)}}
+                                    <h4>{{auth()->user()->address()['rate']}}
                                     </h4>
                                 </div>
-                                <div id="{{strtolower($r['symbol'])}}Chart"></div>
+                                <div id="btcChart"></div>
                             </div>
                         </div>
                     </div>
-                    @endforeach
                 </div>
                 <!-- <iframe src="https://widget.coinlib.io/widget?type=full_v2&theme=light&cnt=6&pref_coin_id=1505&graph=yes" width="100%" height="409px" scrolling="auto" marginwidth="0" marginheight="0" frameborder="0" border="0" style="border:0;margin:0;padding:0;"></iframe> -->
             </div>
