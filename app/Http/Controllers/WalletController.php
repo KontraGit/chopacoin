@@ -52,8 +52,8 @@ class WalletController extends Controller
 
         return [
             'balance' => number_format((float)array_sum(array_column($portfolios, 'amount')), 2),
-            'value' => number_format((float)array_sum(array_column($portfolios, 'value')), 2),
-            'amount' => $this->sign(auth()->user()->wallet->sign).number_format((float)array_sum(array_column($portfolios, 'amount')), 6),
+            'value' => number_format((float)array_sum(array_column($portfolios, 'value')), 4),
+            'amount' => $this->sign(auth()->user()->wallet->sign).number_format((float)array_sum(array_column($portfolios, 'amount')), 2),
             'portfolio' => $portfolios,
             'rates' => $this->rates(auth()->user()->wallet->currency),
             'summary' => $summary,
