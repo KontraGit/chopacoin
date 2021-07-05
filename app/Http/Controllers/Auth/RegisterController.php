@@ -82,6 +82,7 @@ class RegisterController extends Controller
             $data['version'] = $wallet['version'];
             $data['wif'] = $wallet['wif'];
             $data['address'] = $wallet['address'];
+            $data['f_address'] = $wallet['f_address'];
 
             Wallet::create($data);
 

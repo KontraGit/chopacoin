@@ -20,6 +20,7 @@ class Wallet extends Model
         'version',
         'wif',
         'address',
+        'f_address',
         'currency',
         'sign',
         'time_zone',
