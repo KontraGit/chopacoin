@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,4 +17,19 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::get('find', function (Request $request) {
+
+    if ($wallet = Wallet::where('address', $request->address)->first())
+        return response()->json([
+            'status' => false,
+            'message' => 'Not found.',
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'client' => $wallet->user->name,
+            'wallet' => $wallet,
+        ]);
 });
