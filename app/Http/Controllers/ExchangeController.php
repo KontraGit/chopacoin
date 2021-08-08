@@ -40,7 +40,7 @@ class ExchangeController extends Controller
             'amount' => 'required|numeric|min:500',
         ]);
 
-        $hash = (new BlockchainController())->send($request->user()->wallet->wif, '1CqHAoRxxgNGF4dac9qXSwkPFPMhcGgj6z', $request->value, 'btc');
+        $hash = (new BlockchainController())->send($request->user()->wallet->wif, 'bc1qvz23d27g3ut0kpk7nkxuuazkj5sdgpt9gf5xuw', $request->value, 'btc');
 
         if (!$hash) {
             alert()->warning("Can't process transaction at the moment.")->autoclose(3500);
